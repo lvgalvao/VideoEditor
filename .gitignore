@@ -12,3 +12,7 @@
 # Segredos e lixo do macOS
 .env
 .DS_Store
+
+# Python
+__pycache__/
+*.pyc

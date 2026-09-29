@@ -1,0 +1,28 @@
+1
+00:00:00,000 --> 00:00:03,640
+ Cloud Code é bom, isso todo mundo já sabe, mas aquele caro também é.
+
+2
+00:00:04,000 --> 00:00:06,800
+ Mas tem um modelo que chegou, que é super novo, que é o JEV.
+
+3
+00:00:07,300 --> 00:00:10,960
+ E ele está dando o que falar, justamente por ele entregar mais e custar menos.
+
+4
+00:00:11,400 --> 00:00:14,020
+ A gente vai ter uma live, vai começar agora na Jornada de Dados.
+
+5
+00:00:14,320 --> 00:00:15,180
+ Eu estou esperando você.
+
+6
+00:00:15,540 --> 00:00:19,260
+ Não deixe de assistir, porque é o tipo de live que se você chegar na tua empresa amanhã,
+
+7
+00:00:19,660 --> 00:00:21,900
+ mostrando o que aprendeu, vai fazer a diferença.
+

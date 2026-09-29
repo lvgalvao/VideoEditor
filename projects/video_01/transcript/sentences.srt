@@ -1,0 +1,132 @@
+1
+00:00:00,000 --> 00:00:04,440
+ se eu estivesse começando hoje na área de dados
+
+2
+00:00:04,440 --> 00:00:06,560
+ do zero, eu não faria o que eu fiz
+
+3
+00:00:06,560 --> 00:00:08,560
+ e nem o que eu estava recomendando no ano passado
+
+4
+00:00:08,560 --> 00:00:10,600
+ porque a grande verdade é que o jogo mudou
+
+5
+00:00:10,600 --> 00:00:12,560
+ e não é só para quem está começando
+
+6
+00:00:12,560 --> 00:00:14,440
+ se você é pleno, sênior, isso vale
+
+7
+00:00:14,440 --> 00:00:16,420
+ para você também, pela primeira vez
+
+8
+00:00:16,420 --> 00:00:18,460
+ o mercado deixou claro que você
+
+9
+00:00:18,460 --> 00:00:20,640
+ precisa estudar duas coisas
+
+10
+00:00:20,640 --> 00:00:22,020
+ em paralelo, tecnologia
+
+11
+00:00:22,020 --> 00:00:24,560
+ e negócios, neste vídeo eu vou te mostrar
+
+12
+00:00:24,560 --> 00:00:26,100
+ o roadmap que eu seguiria hoje
+
+13
+00:00:26,100 --> 00:00:28,260
+ dependendo de onde você está hoje
+
+14
+00:00:28,260 --> 00:00:30,580
+ eu não estou falando
+
+15
+00:00:30,580 --> 00:00:32,480
+ isso por achismo, eu tenho conversado
+
+16
+00:00:32,480 --> 00:00:34,600
+ com muitas empresas de segmentos diferentes
+
+17
+00:00:34,600 --> 00:00:36,280
+ não é só startups, não
+
+18
+00:00:36,280 --> 00:00:39,060
+ setor de papel celulose, mineração
+
+19
+00:00:39,060 --> 00:00:40,860
+ agronegócio, empresas de serviço
+
+20
+00:00:40,860 --> 00:00:42,900
+ e quando eu pergunto para os gestores
+
+21
+00:00:42,900 --> 00:00:44,540
+ e diretores qual é a maior dificuldade
+
+22
+00:00:44,540 --> 00:00:46,660
+ de contratar hoje, a resposta é
+
+23
+00:00:46,660 --> 00:00:48,640
+ quase sempre a mesma, falta o profissional que tenha
+
+24
+00:00:48,640 --> 00:00:50,420
+ duas habilidades ao mesmo tempo
+
+25
+00:00:50,420 --> 00:00:52,380
+ tecnologia e negócios
+
+26
+00:00:52,380 --> 00:00:54,840
+ alguém que consiga entender o porquê
+
+27
+00:00:54,840 --> 00:00:56,740
+ construir e que saiba como
+
+28
+00:00:56,740 --> 00:00:58,840
+ construir, e sabe quem está ocupando
+
+29
+00:00:58,840 --> 00:00:59,360
+ essa vaga?
+
+30
+00:00:59,900 --> 00:01:00,860
+ profissionais de negócio
+
+31
+00:01:00,860 --> 00:01:02,240
+ que foram estudar tecnologia
+
+32
+00:01:02,240 --> 00:01:03,880
+ e profissionais de tecnologia
+
+33
+00:01:03,880 --> 00:01:05,140
+ que foram estudar negócio
+

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pt-BR" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=block" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root { --y: #ffe14d; --c: #d97757; --red: #ff3b3b; --g: #3ddc84; --card: rgba(14, 14, 18, 0.92); }
+      .ic { width: 54px; height: 54px; vertical-align: -8px; margin-right: 6px; }
+      .ic2 { width: 70px; height: 70px; }
+      .cmp { display: flex; align-items: center; gap: 22px; font-size: 60px; font-weight: 900; text-transform: uppercase; padding: 20px 40px; }
+      .tag { font-size: 150px; font-weight: 900; line-height: 1; color: #fff; background: var(--red); padding: 10px 44px; border-radius: 28px; margin-top: 30px; box-shadow: 0 18px 50px rgba(0,0,0,0.45); }
+      .jed { font-size: 230px; font-weight: 900; line-height: 0.9; color: var(--y); -webkit-text-stroke: 8px #111; paint-order: stroke fill; letter-spacing: 0.02em; }
+      .live { display: flex; align-items: center; gap: 18px; background: var(--red); color: #fff; font-size: 50px; font-weight: 900; padding: 14px 34px; border-radius: 999px; letter-spacing: 0.06em; box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
+      .live i { width: 28px; height: 28px; border-radius: 50%; background: #fff; display: block; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      body { font-family: "Montserrat", sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
+
+      #cam { position: absolute; inset: 0; overflow: hidden; }
+      #punch { position: absolute; inset: 0; transform-origin: 540px 880px; }
+      #a-roll { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      #shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.45) 100%); }
+
+      /* top zone (abaixo da UI do topo do Instagram) */
+      .grp { position: absolute; left: 60px; right: 60px; top: 230px; display: flex; flex-direction: column; align-items: center; gap: 18px; opacity: 0; visibility: hidden; }
+      .card { background: var(--card); border-radius: 30px; padding: 26px 40px; box-shadow: 0 18px 50px rgba(0,0,0,0.45); text-align: center; }
+      .kick { font-size: 36px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255,255,255,0.8); }
+      .big { font-size: 84px; font-weight: 900; line-height: 1; letter-spacing: -0.02em; text-transform: uppercase; }
+      .mid { font-size: 56px; font-weight: 900; line-height: 1.05; text-transform: uppercase; }
+      .hl { background: var(--y); color: #111; padding: 0 16px; border-radius: 12px; display: inline-block; }
+      .hlc { background: var(--c); color: #fff; padding: 0 16px; border-radius: 12px; display: inline-block; }
+      .badge { display: inline-block; background: var(--y); color: #111; font-size: 44px; font-weight: 900; padding: 10px 26px; border-radius: 999px; letter-spacing: 0.04em; }
+      .row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+      .chip { background: var(--card); border: 4px solid var(--y); color: #fff; font-size: 48px; font-weight: 900; padding: 14px 28px; border-radius: 999px; box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
+      .chip.c { border-color: var(--c); }
+      .num { display: flex; align-items: baseline; gap: 18px; }
+      .num b { font-size: 150px; font-weight: 900; line-height: 0.9; color: var(--y); }
+      .num span { font-size: 64px; font-weight: 900; text-transform: uppercase; }
+      .bubble { background: #fff; color: #111; font-size: 50px; font-weight: 900; line-height: 1.1; padding: 30px 38px; border-radius: 34px 34px 34px 8px; box-shadow: 0 18px 50px rgba(0,0,0,0.45); text-align: left; }
+      .bubble em { font-style: normal; color: var(--c); }
+      .stamp { border: 10px solid var(--red); color: var(--red); background: rgba(255,255,255,0.95); font-size: 76px; font-weight: 900; line-height: 1; padding: 22px 34px; border-radius: 20px; text-transform: uppercase; text-align: center; }
+      .year { font-size: 210px; font-weight: 900; line-height: 0.9; color: var(--y); -webkit-text-stroke: 6px #111; paint-order: stroke fill; }
+
+      /* legendas */
+      #caps { position: absolute; left: 40px; right: 40px; top: 1250px; height: 220px; }
+      .cap { position: absolute; left: 0; right: 0; top: 0; text-align: center; font-size: 84px; font-weight: 900; line-height: 1.08; text-transform: uppercase; opacity: 0; visibility: hidden; }
+      .cap .w { display: inline-block; margin: 0 10px; color: #fff; -webkit-text-stroke: 12px #000; paint-order: stroke fill; text-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+      .cap .w.on { color: var(--y); }
+      .cap .w.kc { color: var(--c); }
+
+      /* CTA */
+      #cta { position: absolute; left: 90px; right: 90px; top: 1200px; display: flex; flex-direction: column; align-items: center; gap: 22px; opacity: 0; visibility: hidden; }
+      #cta .btn { background: var(--y); color: #111; font-size: 62px; font-weight: 900; padding: 32px 54px; white-space: nowrap; text-align: center; border-radius: 999px; text-transform: uppercase; box-shadow: 0 0 0 8px rgba(255,225,77,0.35), 0 20px 50px rgba(0,0,0,0.5); }
+      #cta .sub { font-size: 38px; font-weight: 800; background: var(--card); padding: 12px 28px; border-radius: 999px; }
+      #cta .arrow { width: 90px; height: 90px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="22.22" data-width="1080" data-height="1920">
+      <div id="cam">
+        <div id="punch">
+          <video id="a-roll" class="clip" src="clip.mp4" muted playsinline data-start="0" data-duration="22.22" data-track-index="0"></video>
+        </div>
+        <div id="shade"></div>
+      </div>
+      <audio id="a-roll-audio" src="clip.mp4" data-start="0" data-duration="22.22" data-track-index="1" data-volume="1"></audio>
+
+      <div id="g-hook" class="grp">
+        <div class="card"><div class="kick">Todo mundo já sabe</div></div>
+        <div class="big" style="font-size: 92px"><span class="hlc">Claude Code</span></div>
+        <div class="row"><div class="chip" style="border-color: var(--g)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#3DDC84" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6" /></svg> é bom</div></div>
+      </div>
+
+      <div id="g-caro" class="grp">
+        <div class="card"><div class="mid" style="font-size: 54px">mas ele é <span style="color: var(--red)">caro</span></div></div>
+        <div id="c1"><div class="tag" style="transform: rotate(-4deg)">$$$</div></div>
+      </div>
+
+      <div id="g-jed" class="grp">
+        <div class="card"><div class="kick">Chegou um modelo</div></div>
+        <div class="badge" id="j1">SUPER NOVO</div>
+        <div class="jed" id="j2">JEV</div>
+      </div>
+
+      <div id="g-vs" class="grp">
+        <div class="card"><div class="mid" style="font-size: 48px">Tá dando o que <span class="hl">falar</span></div></div>
+        <div class="card cmp" id="v1"><svg class="ic2" viewBox="0 0 24 24" fill="none" stroke="#3DDC84" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5M5 12l7-7 7 7" /></svg><span>Entrega <b style="color: var(--g)">mais</b></span></div>
+        <div class="card cmp" id="v2"><svg class="ic2" viewBox="0 0 24 24" fill="none" stroke="#FFE14D" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v15M5 12l7 7 7-7" /></svg><span>Custa <b style="color: var(--y)">menos</b></span></div>
+      </div>
+
+      <div id="g-live" class="grp">
+        <div class="live"><i id="dot"></i>AO VIVO</div>
+        <div class="card" id="l1"><div class="mid" style="font-size: 56px">Começa <span class="hl">agora</span></div></div>
+        <div class="card" id="l2"><div class="kick" style="font-size: 26px">na</div><div class="mid" style="font-size: 54px; color: var(--y)">Jornada de Dados</div></div>
+      </div>
+
+      <div id="g-emp" class="grp">
+        <div class="card"><div class="mid" style="font-size: 52px">Não perca <span class="hlc">essa live</span></div></div>
+        <div class="chip" id="e1"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#FFE14D" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5l8-3v19M12 8h8v13M2 21h20M7 8h2M7 12h2M7 16h2M15 12h2M15 16h2" /></svg> Amanhã, na sua empresa</div>
+        <div class="chip c" id="e2">mostre o que aprendeu</div>
+      </div>
+
+      <div id="g-stamp" class="grp" style="top: 300px">
+        <div class="stamp">Faz a<br />diferença</div>
+      </div>
+
+      <div id="caps"></div>
+
+      <div id="cta">
+        <div class="btn">Assista à live</div>
+        <div class="sub"><span style="color: var(--red)">●</span> Ao vivo agora · <span style="color: var(--y)">Jornada de Dados</span></div>
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="#FFE14D" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v15M5 12l7 7 7-7" /></svg>
+      </div>
+
+      <audio id="sfx0" src="assets/whoosh.wav" data-start="2.31" data-duration="0.45" data-track-index="2" data-volume="0.3"></audio>
+      <audio id="sfx1" src="assets/pop.wav" data-start="3.09" data-duration="0.12" data-track-index="3" data-volume="0.35"></audio>
+      <audio id="sfx2" src="assets/whoosh.wav" data-start="3.7" data-duration="0.45" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx3" src="assets/pop.wav" data-start="5.36" data-duration="0.12" data-track-index="2" data-volume="0.35"></audio>
+      <audio id="sfx4" src="assets/pop.wav" data-start="6.35" data-duration="0.12" data-track-index="3" data-volume="0.35"></audio>
+      <audio id="sfx5" src="assets/whoosh.wav" data-start="6.7" data-duration="0.45" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx6" src="assets/pop.wav" data-start="8.81" data-duration="0.12" data-track-index="2" data-volume="0.35"></audio>
+      <audio id="sfx7" src="assets/pop.wav" data-start="9.54" data-duration="0.12" data-track-index="3" data-volume="0.35"></audio>
+      <audio id="sfx8" src="assets/whoosh.wav" data-start="10.48" data-duration="0.45" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx9" src="assets/pop.wav" data-start="11.97" data-duration="0.12" data-track-index="2" data-volume="0.35"></audio>
+      <audio id="sfx10" src="assets/pop.wav" data-start="12.32" data-duration="0.12" data-track-index="3" data-volume="0.35"></audio>
+      <audio id="sfx11" src="assets/whoosh.wav" data-start="14.56" data-duration="0.45" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx12" src="assets/pop.wav" data-start="17.39" data-duration="0.12" data-track-index="2" data-volume="0.35"></audio>
+      <audio id="sfx13" src="assets/pop.wav" data-start="18.5" data-duration="0.12" data-track-index="3" data-volume="0.35"></audio>
+      <audio id="sfx14" src="assets/ding.wav" data-start="19.52" data-duration="0.5" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx15" src="assets/thump.wav" data-start="19.9" data-duration="0.5" data-track-index="2" data-volume="0.6"></audio>
+    </div>
+
+    <script>
+      const CFG = {"dur": 22.22, "segZooms": [[0.0, 1.0], [3.7, 1.1], [6.7, 1.0], [10.48, 1.1], [13.27, 1.0], [18.4, 1.1]], "punches": [[3.09, 3.7, 1.1400000000000001, 1.1], [6.35, 6.700000000000001, 1.2400000000000002, 1.0], [20.0, 22.22, 1.2400000000000002, 1.1]], "groups": [{"id": "g-hook", "a": 0, "b": 2.34, "items": [], "instant": true}, {"id": "g-caro", "a": 2.31, "b": 3.75, "items": [["#c1", 3.09, {"y": 60}]], "instant": false}, {"id": "g-jed", "a": 3.7, "b": 6.8, "items": [["#j1", 5.36, {"y": 30}], ["#j2", 6.35, {"scale": 2.6}]], "instant": false}, {"id": "g-vs", "a": 6.7, "b": 10.58, "items": [["#v1", 8.81, {"x": -160}], ["#v2", 9.54, {"x": 160}]], "instant": false}, {"id": "g-live", "a": 10.48, "b": 14.51, "items": [["#l1", 11.97, {"y": 30}], ["#l2", 12.32, {"y": 30}]], "instant": false}, {"id": "g-emp", "a": 14.56, "b": 19.47, "items": [["#e1", 17.39, {"x": -140}], ["#e2", 18.5, {"x": 140}]], "instant": false}, {"id": "g-stamp", "a": 19.9, "b": 22.22, "items": [], "instant": false}], "chunks": [{"a": 0, "b": 0.6, "words": [[0.0, 0.35, "Claude", 0], [0.35, 0.58, "Code", 0], [0.58, 0.64, "é", 0]]}, {"a": 0.6, "b": 0.92, "words": [[0.64, 0.96, "bom,", 0]]}, {"a": 0.92, "b": 1.76, "words": [[0.96, 1.23, "isso", 0], [1.23, 1.48, "todo", 0], [1.48, 1.8, "mundo", 0]]}, {"a": 1.76, "b": 2.32, "words": [[1.8, 1.93, "já", 0], [1.93, 2.36, "sabe,", 0]]}, {"a": 2.32, "b": 3.05, "words": [[2.36, 2.57, "mas", 0], [2.57, 2.83, "ele", 0], [2.83, 3.09, "é", 0]]}, {"a": 3.05, "b": 3.74, "words": [[3.09, 3.36, "caro", 0], [3.36, 3.62, "também.", 0]]}, {"a": 3.74, "b": 4.42, "words": [[3.78, 3.8, "Mas", 1], [3.8, 3.98, "tem", 1], [3.98, 4.13, "um", 1], [4.13, 4.46, "modelo", 1]]}, {"a": 4.42, "b": 5.12, "words": [[4.46, 4.64, "que", 1], [4.64, 5.16, "chegou,", 1]]}, {"a": 5.12, "b": 5.62, "words": [[5.16, 5.3, "que", 1], [5.3, 5.36, "é", 1], [5.36, 5.66, "super", 1]]}, {"a": 5.62, "b": 5.98, "words": [[5.66, 6.02, "novo,", 1]]}, {"a": 5.98, "b": 6.76, "words": [[6.02, 6.2, "que", 1], [6.2, 6.26, "é", 1], [6.26, 6.35, "o", 1], [6.35, 6.56, "JEV.", 1]]}, {"a": 6.76, "b": 6.97, "words": [[6.8, 6.8, "E", 2], [6.8, 6.8, "ele", 2], [6.8, 7.01, "está", 2]]}, {"a": 6.97, "b": 7.47, "words": [[7.01, 7.29, "dando", 2], [7.29, 7.34, "o", 2], [7.34, 7.51, "que", 2]]}, {"a": 7.47, "b": 7.86, "words": [[7.51, 7.9, "falar,", 2]]}, {"a": 7.86, "b": 8.77, "words": [[7.9, 8.47, "justamente", 2], [8.47, 8.63, "por", 2], [8.63, 8.81, "ele", 2]]}, {"a": 8.77, "b": 9.83, "words": [[8.81, 9.26, "entregar", 2], [9.26, 9.49, "mais", 2], [9.49, 9.54, "e", 2], [9.54, 9.87, "custar", 2]]}, {"a": 9.83, "b": 10.52, "words": [[9.87, 10.42, "menos.", 2]]}, {"a": 10.52, "b": 10.85, "words": [[10.56, 10.56, "A", 3], [10.56, 10.72, "gente", 3], [10.72, 10.89, "vai", 3]]}, {"a": 10.85, "b": 11.43, "words": [[10.89, 11.02, "ter", 3], [11.02, 11.17, "uma", 3], [11.17, 11.47, "live,", 3]]}, {"a": 11.43, "b": 12.18, "words": [[11.47, 11.61, "vai", 3], [11.61, 11.97, "começar", 3], [11.97, 12.22, "agora", 3]]}, {"a": 12.18, "b": 13.28, "words": [[12.22, 12.32, "na", 3], [12.32, 12.67, "Jornada", 3], [12.67, 12.76, "de", 3], [12.76, 13.18, "Dados.", 3]]}, {"a": 13.28, "b": 13.84, "words": [[13.32, 13.32, "Eu", 4], [13.32, 13.48, "estou", 4], [13.48, 13.88, "esperando", 4]]}, {"a": 13.84, "b": 14.52, "words": [[13.88, 14.2, "você.", 4]]}, {"a": 14.52, "b": 15.24, "words": [[14.56, 14.57, "Não", 4], [14.57, 14.63, "deixe", 4], [14.63, 14.74, "de", 4], [14.74, 15.28, "assistir,", 4]]}, {"a": 15.24, "b": 15.9, "words": [[15.28, 15.61, "porque", 4], [15.61, 15.66, "é", 4], [15.66, 15.71, "o", 4], [15.71, 15.94, "tipo", 4]]}, {"a": 15.9, "b": 16.38, "words": [[15.94, 16.04, "de", 4], [16.04, 16.25, "live", 4], [16.25, 16.42, "que", 4]]}, {"a": 16.38, "b": 17.09, "words": [[16.42, 16.53, "se", 4], [16.53, 16.91, "você", 4], [16.91, 17.13, "chegar", 4]]}, {"a": 17.09, "b": 17.74, "words": [[17.13, 17.19, "na", 4], [17.19, 17.39, "tua", 4], [17.39, 17.78, "empresa", 4]]}, {"a": 17.74, "b": 18.46, "words": [[17.78, 18.3, "amanhã,", 4]]}, {"a": 18.46, "b": 18.96, "words": [[18.5, 18.84, "mostrando", 5], [18.84, 18.85, "o", 5], [18.85, 19.0, "que", 5]]}, {"a": 18.96, "b": 19.52, "words": [[19.0, 19.52, "aprendeu,", 5]]}], "cta": 19.52};
+      const tl = gsap.timeline({ paused: true });
+      const END = CFG.dur;
+
+      // ---- câmera: alterna zoom a cada corte + punches em frases fortes ----
+      tl.set("#punch", { scale: 1 }, 0);
+      CFG.segZooms.forEach(([t, s]) => tl.set("#punch", { scale: s }, t));
+      CFG.punches.forEach(([a, b, s, back]) => { tl.set("#punch", { scale: s }, a); tl.set("#punch", { scale: back }, b); });
+
+      // ---- grupos do topo ----
+      function show(id, a, b, instant) {
+        if (instant) tl.set(id, { autoAlpha: 1 }, a);
+        else tl.fromTo(id, { autoAlpha: 0, y: -40, scale: 0.9 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(2)" }, a);
+        tl.to(id, { autoAlpha: 0, scale: 0.92, duration: 0.18, ease: "power2.in" }, b - 0.18);
+      }
+      function pop(id, t, from) {
+        tl.fromTo(id, Object.assign({ autoAlpha: 0, scale: 0.4 }, from || {}), { autoAlpha: 1, scale: 1, x: 0, y: 0, duration: 0.3, ease: "back.out(2.5)" }, t);
+      }
+      CFG.groups.forEach((g) => {
+        show("#" + g.id, g.a, g.b, g.instant);
+        (g.items || []).forEach(([sel, t, from]) => pop(sel, t, from));
+        if (g.id === "g-stamp") tl.fromTo("#g-stamp .stamp", { scale: 2.2, rotation: -14 }, { scale: 1, rotation: -6, duration: 0.25, ease: "power4.in" }, g.a);
+        if (g.id === "g-live") tl.to("#dot", { opacity: 0.15, duration: 0.3, yoyo: true, repeat: Math.floor((g.b - g.a) / 0.3) - 1, ease: "sine.inOut" }, g.a + 0.3);
+      });
+
+      // ---- CTA ----
+      tl.fromTo("#cta", { autoAlpha: 0, y: 80, scale: 0.8 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.35, ease: "back.out(2)" }, CFG.cta);
+      tl.to("#cta .btn", { scale: 1.07, duration: 0.35, yoyo: true, repeat: Math.max(1, Math.floor((END - CFG.cta) / 0.35) - 2), ease: "sine.inOut" }, CFG.cta + 0.4);
+      tl.fromTo("#cta .arrow", { y: -8 }, { y: 14, duration: 0.3, yoyo: true, repeat: Math.max(1, Math.floor((END - CFG.cta) / 0.3) - 2), ease: "sine.inOut" }, CFG.cta + 0.3);
+
+      // ---- legendas palavra a palavra ----
+      const KC = /^(claude|code|jev)$/i;
+      const caps = document.getElementById("caps");
+      CFG.chunks.forEach((c) => {
+        const el = document.createElement("div");
+        el.className = "cap";
+        c.words.forEach((w, wi) => {
+          const s = document.createElement("span");
+          const clean = w[2].replace(/[.,?!“”]/g, "");
+          s.className = "w" + (KC.test(clean) ? " kc" : "");
+          s.textContent = w[2].replace(/[,.]$/, "");
+          el.appendChild(s);
+          if (!KC.test(clean)) {
+            tl.set(s, { color: "#FFE14D" }, w[0]);
+            const nx = c.words[wi + 1];
+            tl.set(s, { color: "#FFFFFF" }, nx ? nx[0] : c.b);
+          }
+        });
+        caps.appendChild(el);
+        tl.fromTo(el, { autoAlpha: 0, scale: 0.7 }, { autoAlpha: 1, scale: 1, duration: 0.12, ease: "back.out(3)" }, c.a);
+        tl.set(el, { autoAlpha: 0 }, c.b);
+      });
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

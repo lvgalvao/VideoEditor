@@ -1,0 +1,47 @@
+1
+00:00:00,000 --> 00:00:02,340
+Claude Code é bom, isso todo mundo já sabe,
+
+2
+00:00:02,360 --> 00:00:03,760
+mas ele é caro também.
+
+3
+00:00:03,780 --> 00:00:06,000
+Mas tem um modelo que chegou, que é super novo,
+
+4
+00:00:06,020 --> 00:00:06,780
+que é o JEV.
+
+5
+00:00:06,800 --> 00:00:07,880
+E ele está dando o que falar,
+
+6
+00:00:07,900 --> 00:00:10,540
+justamente por ele entregar mais e custar menos.
+
+7
+00:00:10,560 --> 00:00:12,300
+A gente vai ter uma live, vai começar agora na
+
+8
+00:00:12,320 --> 00:00:13,300
+Jornada de Dados.
+
+9
+00:00:13,320 --> 00:00:14,500
+Eu estou esperando você.
+
+10
+00:00:14,560 --> 00:00:16,230
+Não deixe de assistir, porque é o tipo de live
+
+11
+00:00:16,250 --> 00:00:18,480
+que se você chegar na tua empresa amanhã,
+
+12
+00:00:18,500 --> 00:00:21,220
+mostrando o que aprendeu, vai fazer a diferença.

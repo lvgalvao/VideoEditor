@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="pt-BR" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=block" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --tech: #46e0e6;
+        --biz: #ffb547;
+        --ink: #ffffff;
+        --muted: rgba(255, 255, 255, 0.72);
+        --bad: #ff6b6b;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+      body { font-family: "Inter", sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+      #cam { position: absolute; inset: 0; overflow: hidden; }
+      #punch, #drift { position: absolute; inset: 0; transform-origin: 1090px 330px; }
+      #a-roll { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      #vignette {
+        position: absolute; inset: 0; pointer-events: none;
+        background:
+          linear-gradient(90deg, rgba(0, 10, 25, 0.55) 0%, rgba(0, 10, 25, 0.18) 34%, rgba(0, 0, 0, 0) 50%),
+          linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 22%);
+      }
+
+      /* ---------- liquid glass ---------- */
+      .glass {
+        position: relative;
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.06));
+        background-color: rgba(8, 18, 38, 0.42);
+        backdrop-filter: blur(26px) saturate(170%);
+        -webkit-backdrop-filter: blur(26px) saturate(170%);
+        border: 1.5px solid rgba(255, 255, 255, 0.3);
+        border-radius: 30px;
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.45),
+          inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+          0 24px 60px rgba(0, 0, 0, 0.35);
+      }
+      .card {
+        position: absolute; left: 80px; top: 170px; width: 600px;
+        padding: 40px 44px; opacity: 0; visibility: hidden;
+      }
+      .kicker {
+        font-size: 24px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+        color: var(--muted); margin-bottom: 14px;
+      }
+      .headline { font-size: 64px; font-weight: 800; line-height: 1.04; letter-spacing: -0.02em; }
+      .huge { font-size: 92px; font-weight: 900; line-height: 0.98; letter-spacing: -0.035em; }
+      .tech { color: var(--tech); }
+      .biz { color: var(--biz); }
+      .accent { color: var(--biz); }
+
+      /* list items with strike */
+      .row { display: flex; align-items: center; gap: 18px; font-size: 38px; font-weight: 700; margin-top: 22px; position: relative; }
+      .row .x { flex: none; width: 46px; height: 46px; border-radius: 50%; background: rgba(255, 107, 107, 0.2); border: 2px solid var(--bad); color: var(--bad); display: grid; place-items: center; font-size: 26px; font-weight: 900; }
+      .row .txt { position: relative; }
+      .row .strike { position: absolute; left: -4px; right: -4px; top: 52%; height: 5px; border-radius: 3px; background: var(--bad); transform-origin: left center; }
+
+      /* chips */
+      .chips { display: flex; gap: 14px; margin-top: 24px; flex-wrap: wrap; }
+      .chip { padding: 14px 26px; border-radius: 999px; font-size: 34px; font-weight: 800; background: rgba(255, 255, 255, 0.1); border: 1.5px solid rgba(255, 255, 255, 0.35); }
+      .pill { display: inline-flex; align-items: center; gap: 14px; padding: 18px 30px; border-radius: 999px; font-size: 42px; font-weight: 800; }
+      .pill.t { background: rgba(70, 224, 230, 0.16); border: 2px solid var(--tech); color: var(--tech); }
+      .pill.b { background: rgba(255, 181, 71, 0.16); border: 2px solid var(--biz); color: var(--biz); }
+      .plus { font-size: 48px; font-weight: 900; color: var(--muted); margin: 0 6px; }
+
+      /* roadmap */
+      .road { position: relative; margin-top: 28px; padding-left: 70px; height: 330px; }
+      .road .line { position: absolute; left: 24px; top: 20px; width: 6px; height: 290px; border-radius: 3px; background: linear-gradient(180deg, var(--tech), var(--biz)); transform-origin: top center; }
+      .stop { position: absolute; left: 0; display: flex; align-items: center; gap: 22px; }
+      .stop .dot { width: 54px; height: 54px; border-radius: 50%; background: rgba(8, 18, 38, 0.9); border: 4px solid #fff; display: grid; place-items: center; font-size: 22px; font-weight: 900; }
+      .stop .lbl { font-size: 36px; font-weight: 800; }
+      .stop .sub { font-size: 22px; font-weight: 600; color: var(--muted); }
+
+      /* sectors */
+      .sector { display: flex; align-items: center; gap: 18px; font-size: 36px; font-weight: 700; margin-top: 16px; }
+      .sector .ic { width: 58px; height: 58px; border-radius: 16px; background: rgba(255, 255, 255, 0.14); border: 1.5px solid rgba(255, 255, 255, 0.3); display: grid; place-items: center; font-size: 30px; }
+
+      /* question bubble */
+      .bubble { margin-top: 20px; padding: 28px 32px; border-radius: 26px 26px 26px 6px; background: rgba(255, 255, 255, 0.94); color: #0b1830; font-size: 42px; font-weight: 800; line-height: 1.12; }
+      .answer { margin-top: 22px; font-size: 30px; font-weight: 600; color: var(--muted); }
+
+      /* venn */
+      .venn { position: relative; height: 380px; margin-top: 18px; }
+      .circle { position: absolute; top: 20px; width: 300px; height: 300px; border-radius: 50%; display: flex; align-items: center; font-size: 30px; font-weight: 800; }
+      .circle.t { left: 0; background: rgba(70, 224, 230, 0.2); border: 3px solid var(--tech); color: var(--tech); justify-content: flex-start; padding-left: 32px; }
+      .circle.b { left: 212px; background: rgba(255, 181, 71, 0.2); border: 3px solid var(--biz); color: var(--biz); justify-content: flex-end; padding-right: 30px; }
+      .inter { position: absolute; left: 212px; top: 90px; width: 88px; height: 160px; display: grid; place-items: center; }
+      .inter .star { width: 64px; height: 64px; border-radius: 50%; background: #fff; color: #0b1830; display: grid; place-items: center; font-size: 34px; font-weight: 900; box-shadow: 0 0 40px rgba(255, 255, 255, 0.8); }
+      .vl { position: absolute; top: 330px; font-size: 24px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; width: 260px; text-align: center; }
+      .vl.t { left: 20px; color: var(--tech); }
+      .vl.b { left: 232px; color: var(--biz); }
+
+      /* crossing */
+      .cross { display: flex; align-items: center; gap: 16px; margin-top: 22px; padding: 22px 26px; border-radius: 22px; background: rgba(255, 255, 255, 0.08); border: 1.5px solid rgba(255, 255, 255, 0.22); }
+      .cross .from, .cross .to { font-size: 36px; font-weight: 800; }
+      .cross .arrow { font-size: 40px; font-weight: 900; color: #fff; }
+
+      /* captions */
+      #caps { position: absolute; left: 0; right: 0; bottom: 64px; height: 90px; }
+      .cap {
+        position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+        white-space: nowrap; padding: 14px 30px; border-radius: 20px;
+        font-size: 50px; font-weight: 800; letter-spacing: -0.01em;
+        opacity: 0; visibility: hidden;
+      }
+      .cap .w { opacity: 0.45; }
+      .cap .w.k { color: var(--biz); }
+      .cap .w.kt { color: var(--tech); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="57.93" data-width="1920" data-height="1080">
+      <div id="cam">
+        <div id="punch">
+          <div id="drift">
+            <video id="a-roll" class="clip" src="clean.mp4" muted playsinline data-start="0" data-duration="57.93" data-track-index="0"></video>
+          </div>
+        </div>
+        <div id="vignette"></div>
+      </div>
+      <audio id="a-roll-audio" src="clean.mp4" data-start="0" data-duration="57.93" data-track-index="2" data-volume="1"></audio>
+
+      <!-- C1 hook -->
+      <div id="c1" class="card glass">
+        <div class="kicker">Se eu começasse hoje</div>
+        <div class="huge">em <span class="accent">Dados</span>,<br />do zero.</div>
+      </div>
+
+      <!-- C2 -->
+      <div id="c2" class="card glass">
+        <div class="kicker">O que eu <span style="color: var(--bad)">não</span> faria</div>
+        <div class="row" id="c2a"><div class="x">✕</div><div class="txt">O que eu fiz<div class="strike"></div></div></div>
+        <div class="row" id="c2b"><div class="x">✕</div><div class="txt">O que eu recomendava<br />no ano passado<div class="strike"></div></div></div>
+      </div>
+
+      <!-- C3 -->
+      <div id="c3" class="card glass" style="top: 300px">
+        <div class="kicker">A grande verdade</div>
+        <div class="huge">O jogo<br /><span class="accent">mudou.</span></div>
+      </div>
+
+      <!-- C4 -->
+      <div id="c4" class="card glass">
+        <div class="kicker">Não é só pra quem está começando</div>
+        <div class="chips">
+          <div class="chip" id="ch1">Iniciante</div>
+          <div class="chip" id="ch2">Pleno</div>
+          <div class="chip" id="ch3">Sênior</div>
+        </div>
+        <div class="headline" id="c4t" style="font-size: 48px; margin-top: 26px">Vale pra <span class="accent">você</span> também.</div>
+      </div>
+
+      <!-- C5 -->
+      <div id="c5" class="card glass">
+        <div class="kicker">Pela 1ª vez, o mercado deixou claro</div>
+        <div class="headline">Estude <span class="accent">2 coisas</span><br />em paralelo</div>
+        <div style="margin-top: 30px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px">
+          <div class="pill t" id="c5t">Tecnologia</div>
+          <div class="plus" id="c5p">+</div>
+          <div class="pill b" id="c5b">Negócios</div>
+        </div>
+      </div>
+
+      <!-- C6 roadmap -->
+      <div id="c6" class="card glass">
+        <div class="kicker">Neste vídeo</div>
+        <div class="headline" style="font-size: 52px">O <span class="accent">roadmap</span> que eu<br />seguiria hoje</div>
+        <div class="road">
+          <div class="line"></div>
+          <div class="stop" id="s1" style="top: 0"><div class="dot">1</div><div><div class="lbl">Começando</div><div class="sub">do zero</div></div></div>
+          <div class="stop" id="s2" style="top: 120px"><div class="dot">2</div><div><div class="lbl">Pleno</div><div class="sub">já na área</div></div></div>
+          <div class="stop" id="s3" style="top: 240px"><div class="dot">3</div><div><div class="lbl">Sênior</div><div class="sub">próximo nível</div></div></div>
+        </div>
+      </div>
+
+      <!-- C7 -->
+      <div id="c7" class="card glass" style="top: 330px">
+        <div class="huge" style="font-size: 80px">Não é<br /><span class="accent">achismo.</span></div>
+      </div>
+
+      <!-- C8 sectors -->
+      <div id="c8" class="card glass" style="top: 140px">
+        <div class="kicker">Conversas com empresas de</div>
+        <div class="headline" style="font-size: 50px">segmentos diferentes</div>
+        <div class="sector" id="se1"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2"/><path d="M9 15l-3-3c1-4 5-9 12-9 0 7-5 11-9 12z"/><circle cx="15" cy="9" r="1.5"/></svg></div><div>Startups</div></div>
+        <div class="sector" id="se2"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div><div>Papel e celulose</div></div>
+        <div class="sector" id="se3"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l9-9"/><path d="M8 4c4-1 9 0 12 4-3-1-6-1-8 0z" /><path d="M12 12l3-3"/></svg></div><div>Mineração</div></div>
+        <div class="sector" id="se4"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9"/><path d="M12 9c-3 0-4-3-4-5 3 0 4 2 4 5zM12 9c3 0 4-3 4-5-3 0-4 2-4 5zM12 15c-3 0-4-3-4-5 3 0 4 2 4 5zM12 15c3 0 4-3 4-5-3 0-4 2-4 5z"/></svg></div><div>Agronegócio</div></div>
+        <div class="sector" id="se5"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l4-4 5 2 5-2 4 4-8 8z"/><path d="M8 13l3 3M11 11l3 3"/></svg></div><div>Empresas de serviço</div></div>
+      </div>
+
+      <!-- C9 question -->
+      <div id="c9" class="card glass">
+        <div class="kicker">Pergunto a gestores e diretores</div>
+        <div class="bubble" id="c9q">Qual a maior dificuldade de contratar hoje?</div>
+        <div class="answer" id="c9a">A resposta é quase sempre a mesma…</div>
+      </div>
+
+      <!-- C10 venn -->
+      <div id="c10" class="card glass" style="top: 120px">
+        <div class="kicker">O que falta no mercado</div>
+        <div class="headline" style="font-size: 44px">Um profissional com <span class="accent">2 habilidades</span> ao mesmo tempo</div>
+        <div class="venn">
+          <div class="circle t" id="vt">Tecnologia</div>
+          <div class="circle b" id="vb">Negócios</div>
+          <div class="inter" id="vi"><div class="star">★</div></div>
+          <div class="vl t" id="vlt">Como construir</div>
+          <div class="vl b" id="vlb">Por que construir</div>
+        </div>
+      </div>
+
+      <!-- C11 -->
+      <div id="c11" class="card glass" style="top: 310px">
+        <div class="kicker">E sabe quem está ocupando</div>
+        <div class="huge" style="font-size: 84px">essa <span class="accent">vaga?</span></div>
+      </div>
+
+      <!-- C12 -->
+      <div id="c12" class="card glass" style="top: 220px">
+        <div class="kicker">Quem ocupa a vaga</div>
+        <div class="headline" style="font-size: 50px">Quem cruzou a ponte</div>
+        <div class="cross" id="x1"><span class="from biz">Negócio</span><span class="arrow">→</span><span class="to tech">Tecnologia</span></div>
+        <div class="cross" id="x2"><span class="from tech">Tecnologia</span><span class="arrow">→</span><span class="to biz">Negócio</span></div>
+      </div>
+
+      <div id="caps"></div>
+
+      <audio id="sfx0" src="assets/whoosh.wav" data-start="0.0" data-duration="0.45" data-track-index="3" data-volume="0.22"></audio>
+      <audio id="sfx1" src="assets/whoosh.wav" data-start="3.0" data-duration="0.45" data-track-index="4" data-volume="0.22"></audio>
+      <audio id="sfx2" src="assets/pop.wav" data-start="3.3" data-duration="0.12" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx3" src="assets/pop.wav" data-start="3.9" data-duration="0.12" data-track-index="3" data-volume="0.3"></audio>
+      <audio id="sfx4" src="assets/pop.wav" data-start="4.5" data-duration="0.12" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx5" src="assets/pop.wav" data-start="5.7" data-duration="0.12" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx6" src="assets/thump.wav" data-start="6.3" data-duration="0.5" data-track-index="3" data-volume="0.5"></audio>
+      <audio id="sfx7" src="assets/whoosh.wav" data-start="8.5" data-duration="0.45" data-track-index="4" data-volume="0.22"></audio>
+      <audio id="sfx8" src="assets/pop.wav" data-start="9.2" data-duration="0.12" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx9" src="assets/pop.wav" data-start="10.15" data-duration="0.12" data-track-index="3" data-volume="0.3"></audio>
+      <audio id="sfx10" src="assets/pop.wav" data-start="10.62" data-duration="0.12" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx11" src="assets/ding.wav" data-start="11.55" data-duration="0.5" data-track-index="5" data-volume="0.18"></audio>
+      <audio id="sfx12" src="assets/whoosh.wav" data-start="12.8" data-duration="0.45" data-track-index="3" data-volume="0.22"></audio>
+      <audio id="sfx13" src="assets/pop.wav" data-start="17.85" data-duration="0.12" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx14" src="assets/pop.wav" data-start="18.6" data-duration="0.12" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx15" src="assets/whoosh.wav" data-start="19.5" data-duration="0.45" data-track-index="3" data-volume="0.22"></audio>
+      <audio id="sfx16" src="assets/pop.wav" data-start="20.6" data-duration="0.12" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx17" src="assets/pop.wav" data-start="21.3" data-duration="0.12" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx18" src="assets/pop.wav" data-start="22.0" data-duration="0.12" data-track-index="3" data-volume="0.3"></audio>
+      <audio id="sfx19" src="assets/thump.wav" data-start="24.15" data-duration="0.5" data-track-index="4" data-volume="0.5"></audio>
+      <audio id="sfx20" src="assets/whoosh.wav" data-start="26.15" data-duration="0.45" data-track-index="5" data-volume="0.22"></audio>
+      <audio id="sfx21" src="assets/pop.wav" data-start="29.25" data-duration="0.12" data-track-index="3" data-volume="0.3"></audio>
+      <audio id="sfx22" src="assets/pop.wav" data-start="30.85" data-duration="0.12" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx23" src="assets/pop.wav" data-start="31.85" data-duration="0.12" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx24" src="assets/pop.wav" data-start="32.55" data-duration="0.12" data-track-index="3" data-volume="0.3"></audio>
+      <audio id="sfx25" src="assets/pop.wav" data-start="33.35" data-duration="0.12" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx26" src="assets/whoosh.wav" data-start="34.95" data-duration="0.45" data-track-index="5" data-volume="0.22"></audio>
+      <audio id="sfx27" src="assets/pop.wav" data-start="37.1" data-duration="0.12" data-track-index="3" data-volume="0.3"></audio>
+      <audio id="sfx28" src="assets/thump.wav" data-start="41.1" data-duration="0.5" data-track-index="4" data-volume="0.5"></audio>
+      <audio id="sfx29" src="assets/whoosh.wav" data-start="43.8" data-duration="0.45" data-track-index="5" data-volume="0.22"></audio>
+      <audio id="sfx30" src="assets/whoosh.wav" data-start="44.6" data-duration="0.45" data-track-index="3" data-volume="0.22"></audio>
+      <audio id="sfx31" src="assets/ding.wav" data-start="45.2" data-duration="0.5" data-track-index="4" data-volume="0.18"></audio>
+      <audio id="sfx32" src="assets/pop.wav" data-start="47.25" data-duration="0.12" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx33" src="assets/pop.wav" data-start="49.0" data-duration="0.12" data-track-index="3" data-volume="0.3"></audio>
+      <audio id="sfx34" src="assets/thump.wav" data-start="50.55" data-duration="0.5" data-track-index="4" data-volume="0.5"></audio>
+      <audio id="sfx35" src="assets/whoosh.wav" data-start="52.45" data-duration="0.45" data-track-index="5" data-volume="0.22"></audio>
+      <audio id="sfx36" src="assets/whoosh.wav" data-start="55.0" data-duration="0.45" data-track-index="3" data-volume="0.22"></audio>
+    </div>
+
+    <script>
+      const WORDS = [[0.1, 0.16, "Se"], [0.16, 0.22, "eu"], [0.22, 0.75, "estivesse"], [0.75, 1.21, "começando"], [1.21, 1.43, "hoje"], [1.43, 1.54, "na"], [1.54, 1.76, "área"], [1.76, 1.86, "de"], [1.86, 2.15, "dados"], [2.15, 2.26, "do"], [2.26, 2.66, "zero,"], [3.06, 3.06, "eu"], [3.06, 3.22, "não"], [3.22, 3.46, "faria"], [3.46, 3.54, "o"], [3.54, 3.81, "que"], [3.81, 3.94, "eu"], [3.94, 4.24, "fiz"], [4.24, 4.28, "e"], [4.28, 4.42, "nem"], [4.42, 4.46, "o"], [4.46, 4.6, "que"], [4.6, 4.69, "eu"], [4.69, 4.97, "estava"], [4.97, 5.54, "recomendando"], [5.54, 5.63, "no"], [5.63, 5.76, "ano"], [5.76, 6.24, "passado,"], [6.38, 6.56, "porque"], [6.56, 6.61, "a"], [6.61, 6.93, "grande"], [6.93, 7.3, "verdade"], [7.3, 7.39, "é"], [7.39, 7.51, "que"], [7.51, 7.56, "o"], [7.56, 7.77, "jogo"], [7.77, 8.24, "mudou."], [8.52, 8.52, "E"], [8.52, 8.52, "não"], [8.52, 8.59, "é"], [8.59, 8.68, "só"], [8.68, 8.78, "para"], [8.78, 8.97, "quem"], [8.97, 9.27, "está"], [9.27, 9.74, "começando,"], [9.74, 9.87, "se"], [9.87, 10.14, "você"], [10.14, 10.2, "é"], [10.2, 10.66, "pleno,"], [10.66, 11.23, "sênior,"], [11.23, 11.61, "isso"], [11.61, 11.68, "vale"], [11.68, 11.89, "para"], [11.89, 12.1, "você"], [12.1, 12.58, "também."], [12.82, 12.98, "Pela"], [12.98, 13.36, "primeira"], [13.36, 13.57, "vez"], [13.57, 13.62, "o"], [13.62, 14.08, "mercado"], [14.08, 14.47, "deixou"], [14.47, 14.8, "claro"], [14.8, 15.0, "que"], [15.0, 15.26, "você"], [15.26, 15.91, "precisa"], [15.91, 16.18, "estudar"], [16.18, 16.45, "duas"], [16.45, 16.84, "coisas"], [16.84, 16.97, "em"], [16.97, 17.72, "paralelo,"], [17.92, 18.48, "tecnologia"], [18.48, 18.67, "e"], [18.67, 19.4, "negócios."], [19.54, 19.7, "Neste"], [19.7, 19.92, "vídeo"], [19.92, 20.02, "eu"], [20.02, 20.27, "vou"], [20.27, 20.29, "te"], [20.29, 20.64, "mostrar"], [20.64, 20.69, "o"], [20.69, 21.05, "roadmap"], [21.05, 21.2, "que"], [21.2, 21.3, "eu"], [21.3, 21.72, "seguiria"], [21.72, 22.12, "hoje,"], [22.12, 22.73, "dependendo"], [22.73, 22.89, "de"], [22.89, 23.09, "onde"], [23.09, 23.33, "você"], [23.33, 23.57, "está"], [23.57, 24.06, "hoje."], [24.24, 24.36, "Eu"], [24.36, 24.4, "não"], [24.4, 24.65, "estou"], [24.65, 25.06, "falando"], [25.06, 25.3, "isso"], [25.3, 25.48, "por"], [25.48, 26.04, "achismo,"], [26.18, 26.34, "eu"], [26.34, 26.37, "tenho"], [26.37, 26.93, "conversado"], [26.93, 26.99, "com"], [26.99, 27.28, "muitas"], [27.28, 27.67, "empresas"], [27.67, 27.76, "de"], [27.76, 28.19, "segmentos"], [28.19, 28.88, "diferentes,"], [29.04, 29.1, "não"], [29.1, 29.17, "é"], [29.17, 29.32, "só"], [29.32, 30.08, "startups,"], [30.08, 30.56, "não."], [30.9, 30.99, "Setor"], [30.99, 31.06, "de"], [31.06, 31.3, "papel"], [31.3, 31.92, "celulose,"], [31.92, 32.61, "mineração,"], [32.61, 33.41, "agronegócio,"], [33.41, 33.99, "empresas"], [33.99, 34.04, "de"], [34.04, 34.78, "serviço."], [35.02, 35.17, "E"], [35.17, 35.18, "quando"], [35.18, 35.28, "eu"], [35.28, 35.77, "pergunto"], [35.77, 35.96, "para"], [35.96, 36.07, "os"], [36.07, 36.53, "gestores"], [36.53, 36.58, "e"], [36.58, 37.16, "diretores"], [37.16, 37.42, "qual"], [37.42, 37.44, "é"], [37.44, 37.47, "a"], [37.47, 37.73, "maior"], [37.73, 38.38, "dificuldade"], [38.38, 38.43, "de"], [38.43, 38.9, "contratar"], [38.9, 39.28, "hoje,"], [39.52, 39.68, "a"], [39.68, 39.78, "resposta"], [39.78, 39.83, "é"], [39.83, 40.11, "quase"], [40.11, 40.45, "sempre"], [40.45, 40.53, "a"], [40.53, 41.0, "mesma."], [41.18, 41.3, "Falta"], [41.3, 41.34, "o"], [41.34, 41.93, "profissional"], [41.93, 42.05, "que"], [42.05, 42.31, "tenha"], [42.31, 42.51, "duas"], [42.51, 43.08, "habilidades"], [43.08, 43.18, "ao"], [43.18, 43.44, "mesmo"], [43.44, 43.86, "tempo,"], [43.86, 44.6, "tecnologia"], [44.6, 44.67, "e"], [44.67, 45.5, "negócios."], [45.82, 45.98, "Alguém"], [45.98, 46.15, "que"], [46.15, 46.66, "consiga"], [46.66, 47.25, "entender"], [47.25, 47.32, "o"], [47.32, 47.75, "porquê"], [47.75, 48.42, "construir"], [48.42, 48.49, "e"], [48.49, 48.86, "que"], [48.86, 49.08, "saiba"], [49.08, 49.37, "como"], [49.37, 50.36, "construir."], [50.62, 50.63, "E"], [50.63, 50.78, "sabe"], [50.78, 50.85, "quem"], [50.85, 51.07, "está"], [51.07, 51.51, "ocupando"], [51.51, 51.73, "essa"], [51.73, 52.18, "vaga?"], [52.52, 52.92, "Profissionais"], [52.92, 53.03, "de"], [53.03, 53.44, "negócio"], [53.44, 53.6, "que"], [53.6, 53.88, "foram"], [53.88, 54.26, "estudar"], [54.26, 54.9, "tecnologia"], [54.9, 55.06, "e"], [55.06, 55.72, "profissionais"], [55.72, 55.84, "de"], [55.84, 56.43, "tecnologia"], [56.43, 56.61, "que"], [56.61, 56.91, "foram"], [56.91, 57.32, "estudar"], [57.32, 57.96, "negócio."]];
+      const T_END = 57.93;
+      const tl = gsap.timeline({ paused: true });
+
+      // ---------- camera: slow drift + punch-ins ----------
+      tl.fromTo("#drift", { scale: 1.0 }, { scale: 1.06, duration: T_END, ease: "none" }, 0);
+      const punches = [[6.3, 8.45, 1.14], [24.15, 26.1, 1.1], [41.1, 45.7, 1.12], [50.55, 52.45, 1.16]];
+      tl.set("#punch", { scale: 1 }, 0);
+      punches.forEach(([a, b, s]) => {
+        tl.set("#punch", { scale: s }, a);
+        tl.set("#punch", { scale: 1 }, b);
+      });
+
+      // ---------- cards ----------
+      function card(id, a, b) {
+        tl.fromTo(id, { autoAlpha: 0, y: 40, scale: 0.94, filter: "blur(12px)" },
+          { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.45, ease: "back.out(1.6)" }, a);
+        tl.to(id, { autoAlpha: 0, y: -20, scale: 0.97, filter: "blur(8px)", duration: 0.3, ease: "power2.in" }, b - 0.3);
+      }
+      function popIn(id, t, from) {
+        tl.fromTo(id, Object.assign({ autoAlpha: 0, scale: 0.6 }, from || {}),
+          { autoAlpha: 1, scale: 1, x: 0, y: 0, duration: 0.35, ease: "back.out(2.2)" }, t);
+      }
+
+      card("#c1", 0.0, 2.95);
+
+      card("#c2", 3.0, 6.3);
+      popIn("#c2a", 3.3, { x: -30 });
+      tl.fromTo("#c2a .strike", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power2.out" }, 3.9);
+      tl.to("#c2a .txt", { opacity: 0.55, duration: 0.3 }, 3.9);
+      popIn("#c2b", 4.5, { x: -30 });
+      tl.fromTo("#c2b .strike", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power2.out" }, 5.7);
+      tl.to("#c2b .txt", { opacity: 0.55, duration: 0.3 }, 5.7);
+
+      card("#c3", 6.35, 8.45);
+
+      card("#c4", 8.5, 12.7);
+      popIn("#ch1", 9.2); popIn("#ch2", 10.15); popIn("#ch3", 10.62);
+      popIn("#c4t", 11.55, { y: 20, scale: 0.9 });
+      tl.to(["#ch1", "#ch2", "#ch3"], { backgroundColor: "rgba(255,181,71,0.22)", borderColor: "#FFB547", color: "#FFB547", duration: 0.25, stagger: 0.08 }, 11.6);
+
+      card("#c5", 12.8, 19.45);
+      popIn("#c5t", 17.85, { x: -40 });
+      popIn("#c5p", 18.35);
+      popIn("#c5b", 18.6, { x: 40 });
+
+      card("#c6", 19.5, 24.0);
+      tl.fromTo("#c6 .line", { scaleY: 0 }, { scaleY: 1, duration: 1.4, ease: "power2.inOut" }, 20.5);
+      popIn("#s1", 20.6, { x: -30 }); popIn("#s2", 21.3, { x: -30 }); popIn("#s3", 22.0, { x: -30 });
+      tl.to("#s1 .dot", { borderColor: "#46E0E6", duration: 0.2 }, 22.1);
+      tl.to("#s2 .dot", { borderColor: "#46E0E6", duration: 0.2 }, 22.9);
+      tl.to("#s3 .dot", { borderColor: "#FFB547", duration: 0.2 }, 23.3);
+
+      card("#c7", 24.15, 26.1);
+
+      card("#c8", 26.15, 35.0);
+      [["#se1", 29.25], ["#se2", 30.85], ["#se3", 31.85], ["#se4", 32.55], ["#se5", 33.35]].forEach(([id, t]) => popIn(id, t, { x: -40 }));
+
+      card("#c9", 34.95, 41.05);
+      popIn("#c9q", 37.1, { y: 30, scale: 0.85 });
+      tl.fromTo("#c9a", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4 }, 39.6);
+
+      card("#c10", 41.1, 50.4);
+      tl.fromTo("#vt", { autoAlpha: 0, x: -120 }, { autoAlpha: 1, x: 0, duration: 0.55, ease: "power3.out" }, 43.8);
+      tl.fromTo("#vb", { autoAlpha: 0, x: 120 }, { autoAlpha: 1, x: 0, duration: 0.55, ease: "power3.out" }, 44.6);
+      popIn("#vi", 45.2);
+      tl.to("#vi .star", { scale: 1.15, duration: 0.5, yoyo: true, repeat: 5, ease: "sine.inOut" }, 45.6);
+      popIn("#vlb", 47.25, { y: 20 });
+      popIn("#vlt", 49.0, { y: 20 });
+
+      card("#c11", 50.55, 52.45);
+
+      card("#c12", 52.45, T_END + 0.3);
+      popIn("#x1", 52.5, { x: -40 });
+      popIn("#x2", 55.0, { x: -40 });
+      tl.fromTo("#x1 .arrow", { x: -6 }, { x: 6, duration: 0.5, yoyo: true, repeat: 3, ease: "sine.inOut" }, 52.9);
+      tl.fromTo("#x2 .arrow", { x: -6 }, { x: 6, duration: 0.5, yoyo: true, repeat: 3, ease: "sine.inOut" }, 55.4);
+
+      // ---------- captions (word by word) ----------
+      const KB = /^(neg[oó]cios?|dados|jogo|mudou|roadmap|achismo|s[eê]nior|pleno|vaga|duas|zero|porqu[eê])$/i;
+      const KT = /^(tecnologia|construir|como)$/i;
+      const chunks = [];
+      let cur = [];
+      WORDS.forEach((w, i) => {
+        cur.push(w);
+        const txt = w[2];
+        const next = WORDS[i + 1];
+        const gap = next ? next[0] - w[1] : 1;
+        if (/[.,?!]$/.test(txt) || cur.length >= 4 || gap > 0.35 || !next) { chunks.push(cur); cur = []; }
+      });
+      const caps = document.getElementById("caps");
+      chunks.forEach((c, ci) => {
+        const el = document.createElement("div");
+        el.className = "cap glass";
+        c.forEach((w) => {
+          const s = document.createElement("span");
+          const clean = w[2].replace(/[.,?!]/g, "");
+          s.className = "w" + (KB.test(clean) ? " k" : KT.test(clean) ? " kt" : "");
+          s.textContent = w[2].replace(/[,.]$/, "") + " ";
+          el.appendChild(s);
+          w.el = s;
+        });
+        el.lastChild.textContent = el.lastChild.textContent.trim();
+        caps.appendChild(el);
+        const a = c[0][0] - 0.05;
+        const nextChunk = chunks[ci + 1];
+        const b = nextChunk ? Math.min(nextChunk[0][0] - 0.05, c[c.length - 1][1] + 0.6) : T_END;
+        tl.fromTo(el, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.12, ease: "power2.out" }, a);
+        c.forEach((w) => tl.to(w.el, { opacity: 1, duration: 0.08 }, w[0]));
+        tl.set(el, { autoAlpha: 0 }, b);
+      });
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
